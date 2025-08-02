@@ -1,7 +1,10 @@
 // calendar_view.cpp
+#include <ctime>
 #include <iomanip>
 #include <iostream>
+#include <map>
 #include <sstream>
+#include <string>
 
 #include "calendar_view.h"
 
@@ -32,8 +35,30 @@ static std::string getMonthName(int month) {
   return names[month - 1];
 }
 
-// 生成单个月份的 8 行表示：1 行标题，1 行 weekday header，最多 6 行数字
-static std::vector<std::string> generateMonthBlock(int year, int month) {
+static void getToday(int& y, int& m, int& d) {
+  time_t t = time(nullptr);
+  tm* now = localtime(&t);
+  y = now->tm_year + 1900;
+  m = now->tm_mon + 1;
+  d = now->tm_mday;
+}
+
+static std::string highlightDay(int day, const std::string& type) {
+  std::ostringstream out;
+  if (type == "start") {
+    out << "\033[43m" << std::setw(2) << day << "\033[0m";
+  } else if (type == "end") {
+    out << "\033[41m" << std::setw(2) << day << "\033[0m";
+  } else if (type == "today") {
+    out << "\033[44;1;37m" << std::setw(2) << day << "\033[0m";
+  } else {
+    out << std::setw(2) << day;
+  }
+  return out.str();
+}
+
+static std::vector<std::string> generateMonthBlock(
+    int year, int month, const std::map<std::string, std::string>& highlights) {
   std::vector<std::string> lines;
 
   std::ostringstream title;
@@ -45,6 +70,9 @@ static std::vector<std::string> generateMonthBlock(int year, int month) {
   int startWeekday = getWeekday(year, month, 1);
   int days = getDaysInMonth(year, month);
 
+  int todayY, todayM, todayD;
+  getToday(todayY, todayM, todayD);
+
   std::ostringstream line;
   int day = 1, wd = 0;
   for (int i = 0; i < startWeekday; ++i) {
@@ -53,7 +81,18 @@ static std::vector<std::string> generateMonthBlock(int year, int month) {
   }
 
   while (day <= days) {
-    line << std::setw(2) << day << " ";
+    std::ostringstream dateKey;
+    dateKey << std::setw(4) << std::setfill('0') << year << std::setw(2)
+            << std::setfill('0') << month << std::setw(2) << std::setfill('0')
+            << day;
+    std::string type = "normal";
+    auto it = highlights.find(dateKey.str());
+    if (it != highlights.end()) {
+      type = it->second;
+    } else if (year == todayY && month == todayM && day == todayD) {
+      type = "today";
+    }
+    line << highlightDay(day, type) << " ";
     ++day;
     ++wd;
     if (wd == 7) {
@@ -63,28 +102,36 @@ static std::vector<std::string> generateMonthBlock(int year, int month) {
       wd = 0;
     }
   }
-
   if (wd != 0) {
     while (wd++ < 7) line << "   ";
     lines.push_back(line.str());
   }
-
   while (lines.size() < BOX_HEIGHT) {
     lines.push_back("");
   }
-
   return lines;
 }
 
 void printCalendarRange(int startYear, int startMonth, int endYear,
                         int endMonth) {
+  std::map<std::string, std::string> highlights;
+
+  std::ostringstream startKey, endKey;
+  startKey << std::setw(4) << std::setfill('0') << startYear << std::setw(2)
+           << std::setfill('0') << startMonth << "01";
+  endKey << std::setw(4) << std::setfill('0') << endYear << std::setw(2)
+         << std::setfill('0') << endMonth << "31";
+
+  highlights[startKey.str()] = "start";
+  highlights[endKey.str()] = "end";
+
   std::vector<std::vector<std::string>> months;
 
   for (int y = startYear; y <= endYear; ++y) {
     int m1 = (y == startYear) ? startMonth : 1;
     int m2 = (y == endYear) ? endMonth : 12;
     for (int m = m1; m <= m2; ++m) {
-      months.push_back(generateMonthBlock(y, m));
+      months.push_back(generateMonthBlock(y, m, highlights));
     }
   }
 
