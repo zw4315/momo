@@ -1,15 +1,30 @@
 // calendar_view.cpp
-#include <ctime>
 #include <iomanip>
 #include <iostream>
 #include <map>
 #include <sstream>
 #include <string>
+#include <vector>
 
+#include "calendar_controller.h"
 #include "calendar_view.h"
 
 static const int BOX_WIDTH = 22;
 static const int BOX_HEIGHT = 8;
+
+static std::string highlightDay(int day, const std::string& type) {
+  std::ostringstream out;
+  if (type == "start") {
+    out << "\033[43m" << std::setw(2) << day << "\033[0m";
+  } else if (type == "end") {
+    out << "\033[41m" << std::setw(2) << day << "\033[0m";
+  } else if (type == "today") {
+    out << "\033[44;1;37m" << std::setw(2) << day << "\033[0m";
+  } else {
+    out << std::setw(2) << day;
+  }
+  return out.str();
+}
 
 static int getDaysInMonth(int year, int month) {
   static const int days[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -35,32 +50,9 @@ static std::string getMonthName(int month) {
   return names[month - 1];
 }
 
-static void getToday(int& y, int& m, int& d) {
-  time_t t = time(nullptr);
-  tm* now = localtime(&t);
-  y = now->tm_year + 1900;
-  m = now->tm_mon + 1;
-  d = now->tm_mday;
-}
-
-static std::string highlightDay(int day, const std::string& type) {
-  std::ostringstream out;
-  if (type == "start") {
-    out << "\033[43m" << std::setw(2) << day << "\033[0m";
-  } else if (type == "end") {
-    out << "\033[41m" << std::setw(2) << day << "\033[0m";
-  } else if (type == "today") {
-    out << "\033[44;1;37m" << std::setw(2) << day << "\033[0m";
-  } else {
-    out << std::setw(2) << day;
-  }
-  return out.str();
-}
-
 static std::vector<std::string> generateMonthBlock(
     int year, int month, const std::map<std::string, std::string>& highlights) {
   std::vector<std::string> lines;
-
   std::ostringstream title;
   title << std::setw(BOX_WIDTH) << std::right
         << getMonthName(month) + " " + std::to_string(year);
@@ -69,9 +61,6 @@ static std::vector<std::string> generateMonthBlock(
 
   int startWeekday = getWeekday(year, month, 1);
   int days = getDaysInMonth(year, month);
-
-  int todayY, todayM, todayD;
-  getToday(todayY, todayM, todayD);
 
   std::ostringstream line;
   int day = 1, wd = 0;
@@ -85,12 +74,11 @@ static std::vector<std::string> generateMonthBlock(
     dateKey << std::setw(4) << std::setfill('0') << year << std::setw(2)
             << std::setfill('0') << month << std::setw(2) << std::setfill('0')
             << day;
+
     std::string type = "normal";
     auto it = highlights.find(dateKey.str());
     if (it != highlights.end()) {
       type = it->second;
-    } else if (year == todayY && month == todayM && day == todayD) {
-      type = "today";
     }
     line << highlightDay(day, type) << " ";
     ++day;
@@ -112,26 +100,19 @@ static std::vector<std::string> generateMonthBlock(
   return lines;
 }
 
-void printCalendarRange(int startYear, int startMonth, int endYear,
-                        int endMonth) {
-  std::map<std::string, std::string> highlights;
-
-  std::ostringstream startKey, endKey;
-  startKey << std::setw(4) << std::setfill('0') << startYear << std::setw(2)
-           << std::setfill('0') << startMonth << "01";
-  endKey << std::setw(4) << std::setfill('0') << endYear << std::setw(2)
-         << std::setfill('0') << endMonth << "31";
-
-  highlights[startKey.str()] = "start";
-  highlights[endKey.str()] = "end";
-
+void printCalendarRange(const CalendarContext& ctx) {
   std::vector<std::vector<std::string>> months;
 
-  for (int y = startYear; y <= endYear; ++y) {
-    int m1 = (y == startYear) ? startMonth : 1;
-    int m2 = (y == endYear) ? endMonth : 12;
+  int startY = ctx.startDate.year;
+  int startM = ctx.startDate.month;
+  int endY = ctx.endDate.year;
+  int endM = ctx.endDate.month;
+
+  for (int y = startY; y <= endY; ++y) {
+    int m1 = (y == startY) ? startM : 1;
+    int m2 = (y == endY) ? endM : 12;
     for (int m = m1; m <= m2; ++m) {
-      months.push_back(generateMonthBlock(y, m, highlights));
+      months.push_back(generateMonthBlock(y, m, ctx.highlightMap));
     }
   }
 
@@ -146,4 +127,6 @@ void printCalendarRange(int startYear, int startMonth, int endYear,
     }
     std::cout << "\n";
   }
+
+  std::cout << "\n" << ctx.summaryMessage << "\n";
 }
