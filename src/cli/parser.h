@@ -9,4 +9,4 @@ struct CLIOptions {
   std::string endDateStr;
 };
 
-bool parseCLI(int argc, char* argv[], CLIOptions& out);
+bool parseCLI(int argc, char* argv[], CLIOptions& options);

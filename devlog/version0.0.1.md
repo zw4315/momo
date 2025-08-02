@@ -19,7 +19,10 @@
 
 ## History
 
-- 2025.07.31
+2025.08.02
+- 支持输入两个日期，显示 days remains
+
+2025.07.31
 - [] ALE 插件的安装
 - [] 把 dotfiles 更新
 - 安装 clang-format 做原始文件的 codestyle 改进
