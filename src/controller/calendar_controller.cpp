@@ -10,7 +10,7 @@ static std::string formatDate(const Date& d) {
   return oss.str();
 }
 
-CalendarContext buildCalendarContext(const Date& start, const Date& end) {
+CalendarContext BuildCalendarContext(const Date& start, const Date& end) {
   CalendarContext ctx;
   ctx.startDate = start;
   ctx.endDate = end;

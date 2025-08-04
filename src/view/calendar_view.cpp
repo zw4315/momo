@@ -100,7 +100,7 @@ static std::vector<std::string> generateMonthBlock(
   return lines;
 }
 
-void printCalendarRange(const CalendarContext& ctx) {
+void PrintCalendarRange(const CalendarContext& ctx) {
   std::vector<std::vector<std::string>> months;
 
   int startY = ctx.startDate.year;

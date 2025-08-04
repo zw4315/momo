@@ -7,6 +7,6 @@
 
 #include "calendar_controller.h"
 
-void printCalendarRange(const CalendarContext& ctx);
+void PrintCalendarRange(const CalendarContext& ctx);
 
 #endif  // CALENDAR_VIEW_H

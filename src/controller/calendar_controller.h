@@ -15,6 +15,6 @@ struct CalendarContext {
   std::string summaryMessage;
 };
 
-CalendarContext buildCalendarContext(const Date& start, const Date& end);
+CalendarContext BuildCalendarContext(const Date& start, const Date& end);
 
 #endif  // CALENDAR_CONTROLLER_H

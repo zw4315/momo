@@ -17,8 +17,8 @@ int main(int argc, char* argv[]) {
     Date endDate = Date::fromString(options.endDateStr);
     if (endDate < startDate) std::swap(startDate, endDate);
 
-    CalendarContext ctx = buildCalendarContext(startDate, endDate);
-    printCalendarRange(ctx);
+    CalendarContext ctx = BuildCalendarContext(startDate, endDate);
+    PrintCalendarRange(ctx);
   } else {
     std::cerr << "Unsupported command.\n";
     return 1;
