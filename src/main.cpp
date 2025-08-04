@@ -7,14 +7,14 @@
 
 int main(int argc, char* argv[]) {
   CLIOptions options;
-  if (!parseCLI(argc, argv, options)) {
+  if (!ParseCliArgs(argc, argv, options)) {
     std::cerr << "Usage: calendar view YYYYMMDD YYYYMMDD\n";
     return 1;
   }
 
   if (options.command == CommandType::VIEW) {
-    Date startDate = Date::fromString(options.startDateStr);
-    Date endDate = Date::fromString(options.endDateStr);
+    Date startDate = Date::FromString(options.startDateStr);
+    Date endDate = Date::FromString(options.endDateStr);
     if (endDate < startDate) std::swap(startDate, endDate);
 
     CalendarContext ctx = BuildCalendarContext(startDate, endDate);

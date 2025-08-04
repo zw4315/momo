@@ -11,10 +11,10 @@ struct Date {
   Date() : year(0), month(0), day(0) {}
   Date(int y, int m, int d) : year(y), month(m), day(d) {}
 
-  std::string toKey() const;                       // e.g. "20250802"
-  int toDays() const;                              // days since epoch
-  static Date today();                             // current date
-  static Date fromString(const std::string& str);  // e.g. "20250802"
+  std::string ToKey() const;                       // e.g. "20250802"
+  int ToDays() const;                              // days since epoch
+  static Date Gettoday();                          // current date
+  static Date FromString(const std::string& str);  // e.g. "20250802"
 
   bool operator==(const Date& other) const;
   bool operator<(const Date& other) const;

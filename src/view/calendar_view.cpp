@@ -12,27 +12,27 @@
 static const int BOX_WIDTH = 22;
 static const int BOX_HEIGHT = 8;
 
-static std::string highlightDay(int day, const std::string& type) {
+static std::string HighlightDay(int day, const std::string& type) {
   std::ostringstream out;
   if (type == "start") {
-    out << "\033[43m" << std::setw(2) << day << "\033[0m";
+    out << "\033[103m" << std::setw(2) << day << "\033[0m";  // 亮黄底
   } else if (type == "end") {
-    out << "\033[41m" << std::setw(2) << day << "\033[0m";
+    out << "\033[101m" << std::setw(2) << day << "\033[0m";  // 亮红底
   } else if (type == "today") {
-    out << "\033[44;1;37m" << std::setw(2) << day << "\033[0m";
+    out << "\033[107;30m" << std::setw(2) << day << "\033[0m";  // 白底黑字
   } else {
     out << std::setw(2) << day;
   }
   return out.str();
 }
 
-static int getDaysInMonth(int year, int month) {
+static int GetDaysInMonth(int year, int month) {
   static const int days[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
   if (month != 2) return days[month - 1];
   return (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) ? 29 : 28;
 }
 
-static int getWeekday(int year, int month, int day) {
+static int GetWeekday(int year, int month, int day) {
   if (month < 3) {
     month += 12;
     --year;
@@ -43,24 +43,24 @@ static int getWeekday(int year, int month, int day) {
   return (h + 6) % 7;  // Sunday = 0
 }
 
-static std::string getMonthName(int month) {
+static std::string GetMonthName(int month) {
   static const char* names[] = {
       "January", "February", "March",     "April",   "May",      "June",
       "July",    "August",   "September", "October", "November", "December"};
   return names[month - 1];
 }
 
-static std::vector<std::string> generateMonthBlock(
+static std::vector<std::string> GenerateMonthBlock(
     int year, int month, const std::map<std::string, std::string>& highlights) {
   std::vector<std::string> lines;
   std::ostringstream title;
   title << std::setw(BOX_WIDTH) << std::right
-        << getMonthName(month) + " " + std::to_string(year);
+        << GetMonthName(month) + " " + std::to_string(year);
   lines.push_back(title.str());
   lines.push_back("Su Mo Tu We Th Fr Sa");
 
-  int startWeekday = getWeekday(year, month, 1);
-  int days = getDaysInMonth(year, month);
+  int startWeekday = GetWeekday(year, month, 1);
+  int days = GetDaysInMonth(year, month);
 
   std::ostringstream line;
   int day = 1, wd = 0;
@@ -80,7 +80,7 @@ static std::vector<std::string> generateMonthBlock(
     if (it != highlights.end()) {
       type = it->second;
     }
-    line << highlightDay(day, type) << " ";
+    line << HighlightDay(day, type) << " ";
     ++day;
     ++wd;
     if (wd == 7) {
@@ -112,7 +112,7 @@ void PrintCalendarRange(const CalendarContext& ctx) {
     int m1 = (y == startY) ? startM : 1;
     int m2 = (y == endY) ? endM : 12;
     for (int m = m1; m <= m2; ++m) {
-      months.push_back(generateMonthBlock(y, m, ctx.highlightMap));
+      months.push_back(GenerateMonthBlock(y, m, ctx.highlightMap));
     }
   }
 

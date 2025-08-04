@@ -3,7 +3,7 @@
 #include "Date.h"
 #include "parser.h"
 
-bool parseCLI(int argc, char* argv[], CLIOptions& options) {
+bool ParseCliArgs(int argc, char* argv[], CLIOptions& options) {
   if (argc != 2 && argc != 3) return false;
 
   options.command = CommandType::VIEW;
@@ -12,7 +12,7 @@ bool parseCLI(int argc, char* argv[], CLIOptions& options) {
   if (argc == 3) {
     options.endDateStr = argv[2];
   } else {
-    options.endDateStr = Date::today().toKey();  // 默认设为今天
+    options.endDateStr = Date::Gettoday().ToKey();  // 默认设为今天
   }
 
   return true;
