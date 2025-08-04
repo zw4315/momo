@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CALENDAR_CONTROLLER_H
+#define CALENDAR_CONTROLLER_H
+
 #include <map>
 #include <string>
 
@@ -14,3 +16,5 @@ struct CalendarContext {
 };
 
 CalendarContext buildCalendarContext(const Date& start, const Date& end);
+
+#endif  // CALENDAR_CONTROLLER_H
