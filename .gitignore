@@ -1,4 +1,5 @@
 build/
+test_logs/
 GTAGS
 GRTAGS
 GPATH
