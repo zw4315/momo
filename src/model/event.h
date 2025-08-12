@@ -19,6 +19,7 @@ class Event {
   std::string description_;
   std::string created_at_;
   std::string updated_at_;
+  std::string due_at_;
   std::vector<std::string> tags_;  // 用于展示/传输
   std::unordered_map<std::string, float> metrics_;
 };

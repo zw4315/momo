@@ -1,5 +1,7 @@
 ## Vertion 0.0.1
 
+- 作为稳定的 context，为了突出特殊日期 (高亮 e.g)，应该是有 json 的一个 sections 标注了哪些日期 
+- 作为 service，为了满足用户可以自己对日期加上 tag 分类，代码设计不应该写死 tags 的枚举类型
 - 对于用户输入 parser，
 - 对于用户输入 parser，
 - 对于用户输入 parser，
@@ -34,13 +36,18 @@
 
 ## History
 
-2025.08.06 - 2025-0810
-- doing 写 IT 检测 db 储存用户输入
-- doing 把输入改成表驱动的形式
+2025.08.06 - 2025-0812
+
+- todo 把“响应体”换成稳定的结构化输出（JSON 最好），写到 stdout；错误写到 stderr，并用明确的退出码L
+    - 应该关于日期的 tags 是有两种的，一种只是
+- todo 写 IT 检测 db 储存用户输入
+- todo 把输入改成表驱动的形式
 - 添加第一个 utils 的测试用例，跑通第一个用例
 
 2025.08.02
+
 - 支持输入两个日期，显示 days remains
 
 2025.07.31
+
 - 安装 clang-format 做原始文件的 codestyle 改进

@@ -21,21 +21,21 @@ void App::RegisterBuiltinCommands() {
       },
       "Show help message");
 
-  r.Register(
-      "add",
-      [](const auto& args) {
-        if (args.empty()) {
-          std::cerr << "Usage: add <event-text>\n";
-          return 1;
-        }
-        std::string text;
-        for (auto& w : args) {
-          if (!text.empty()) text += " ";
-          text += w;
-        }
-        return controller::AddEvent(text);
-      },
-      "Add an event");
+  /* r.Register( */
+  /*     "add", */
+  /*     [](const auto& args) { */
+  /*       if (args.empty()) { */
+  /*         std::cerr << "Usage: add <event-text>\n"; */
+  /*         return 1; */
+  /*       } */
+  /*       std::string text; */
+  /*       for (auto& w : args) { */
+  /*         if (!text.empty()) text += " "; */
+  /*         text += w; */
+  /*       } */
+  /*       return controller::AddEvent(text); */
+  /*     }, */
+  /*     "Add an event"); */
 
   r.Register(
       "view",
