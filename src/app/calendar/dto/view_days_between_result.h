@@ -1,0 +1,18 @@
+#ifndef MOMO_APP_CALENDAR_DTO_VIEW_DAYS_BETWEEN_RESULT_H_
+#define MOMO_APP_CALENDAR_DTO_VIEW_DAYS_BETWEEN_RESULT_H_
+
+#include <string>
+
+namespace app {
+namespace calendar {
+namespace dto {
+
+struct ViewDaysBetweenResult {
+  int days;
+};
+
+}  // namespace dto
+}  // namespace calendar
+}  // namespace app
+
+#endif  // MOMO_APP_CALENDAR_DTO_VIEW_DAYS_BETWEEN_RESULT_H_

@@ -1,60 +1,114 @@
 #include <iostream>
+#include <sstream>
 
 #include "cli/app.h"
-#include "controller/controller.h"
-#include "utils/date_utils.h"
 
-using timension::cli::CommandRegistry;
+namespace cli {
 
-namespace timension::cli {
+using presentation::controllers::CalendarController;
+namespace dto = app::calendar::dto;
 
-App::App() { RegisterBuiltinCommands(); }
+App::App() : repo_(), service_(repo_), controller_(service_) {
+  RegisterCommands();
+}
 
-void App::RegisterBuiltinCommands() {
-  auto& r = registry_;
-
-  r.Register(
-      "help",
-      [this](auto) {
-        r.ShowHelp();
-        return 0;
-      },
-      "Show help message");
-
-  /* r.Register( */
-  /*     "add", */
-  /*     [](const auto& args) { */
-  /*       if (args.empty()) { */
-  /*         std::cerr << "Usage: add <event-text>\n"; */
-  /*         return 1; */
-  /*       } */
-  /*       std::string text; */
-  /*       for (auto& w : args) { */
-  /*         if (!text.empty()) text += " "; */
-  /*         text += w; */
-  /*       } */
-  /*       return controller::AddEvent(text); */
-  /*     }, */
-  /*     "Add an event"); */
-
-  r.Register(
+void App::RegisterCommands() {
+  // view YYYYMMDD YYYYMMDD
+  registry_.Register(
       "view",
-      [](const auto& args) {
-        using namespace timension::utils;
-        if (args.empty())
-          return controller::ViewAllEvents();
-        else if (args.size() == 1)
-          return controller::ViewEvents(GetTodayDateStr(), args[0]);
-        else if (args.size() == 2)
-          return controller::ViewEvents(args[0], args[1]);
-        std::cerr << "Usage: view [end] | view <start> <end>\n";
-        return 1;
-      },
-      "View events");
+      cli::Command{
+          /*handler=*/[this](const std::vector<std::string_view>& args)
+                          -> cli::CmdResult {
+            try {
+              auto res =
+                  controller_.View(std::string(args[0]), std::string(args[1]));
+              return cli::CmdResult{0, view_.Render(res), ""};
+            } catch (const std::exception& e) {
+              return cli::CmdResult{1, "", e.what()};
+            }
+          },
+          /*description=*/"Show natural day difference between two dates.",
+          /*usage=*/"view YYYYMMDD YYYYMMDD",
+          /*min_args=*/2,
+          /*max_args=*/2,
+          /*aliases=*/{}});
+
+  // addtag YYYYMMDD TAG
+  registry_.Register(
+      "addtag",
+      cli::Command{/*handler=*/[this](const std::vector<std::string_view>& args)
+                                   -> cli::CmdResult {
+                     try {
+                       auto res = controller_.AddTag(std::string(args[0]),
+                                                     std::string(args[1]));
+                       return cli::CmdResult{0, view_.Render(res), ""};
+                     } catch (const std::exception& e) {
+                       return cli::CmdResult{1, "", e.what()};
+                     }
+                   },
+                   /*description=*/"Add a tag to a specific day (idempotent).",
+                   /*usage=*/"addtag YYYYMMDD TAG",
+                   /*min_args=*/2,
+                   /*max_args=*/2,
+                   /*aliases=*/{}});
+
+  // help
+  registry_.Register(
+      "help",
+      cli::Command{/*handler=*/[this](const std::vector<std::string_view>&)
+                                   -> cli::CmdResult {
+                     std::ostringstream os;
+                     registry_.ShowHelp(os);
+                     return cli::CmdResult{0, os.str(), ""};
+                   },
+                   /*description=*/"Show available commands.",
+                   /*usage=*/"help",
+                   /*min_args=*/0,
+                   /*max_args=*/0,
+                   /*aliases=*/{"-h", "--help", "?"}});
 }
 
 int App::Run(int argc, const char* argv[]) {
-  return registry_.Dispatch(argc, argv);
+  if (argc <= 1) {
+    // 简易 REPL
+    std::cout << "momo CLI (type 'help' for commands, 'exit' to quit)\n";
+    std::string line;
+    while (true) {
+      std::cout << "momo> " << std::flush;
+      if (!std::getline(std::cin, line)) break;
+      if (line == "exit" || line == "quit") break;
+      auto r = RunLine(line);
+      if (!r.out.empty()) std::cout << r.out << "\n";
+      if (!r.err.empty()) std::cerr << r.err << "\n";
+    }
+    return 0;
+  }
+
+  // 直接从 argv 分发一次
+  auto r = registry_.Dispatch(argc, argv);
+  if (!r.out.empty()) std::cout << r.out << "\n";
+  if (!r.err.empty()) std::cerr << r.err << "\n";
+  return r.code;
 }
 
-}  // namespace timension::cli
+std::vector<std::string> App::Tokenize(const std::string& line) {
+  std::istringstream is(line);
+  std::vector<std::string> out;
+  std::string tok;
+  while (is >> tok) out.push_back(tok);
+  return out;
+}
+
+cli::CmdResult App::RunLine(const std::string& line) {
+  auto toks = Tokenize(line);
+  if (toks.empty()) return cli::CmdResult{0, "", ""};
+
+  // tokens -> string_view（引用 toks 的存储，生命周期在本函数内有效）
+  std::vector<std::string_view> views;
+  views.reserve(toks.size());
+  for (const auto& s : toks) views.emplace_back(s);
+
+  return registry_.Dispatch(views);
+}
+
+}  // namespace cli

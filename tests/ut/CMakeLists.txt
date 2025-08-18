@@ -2,4 +2,4 @@
 add_subdirectory(service)
 add_subdirectory(utils)
 add_subdirectory(cli)
-
+add_subdirectory(app)
