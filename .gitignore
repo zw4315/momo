@@ -6,3 +6,5 @@ GPATH
 tags
 .tags
 .cache/tags
+# 保留 src/tags
+!src/domain/tags/
