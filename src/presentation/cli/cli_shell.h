@@ -7,12 +7,11 @@
 #include <vector>
 
 #include "app/calendar/use_cases/calendar_service.h"
-#include "cli/command_registry.h"
 #include "infrastructure/persistence/memory/day_tags_repository_memory.h"
 #include "infrastructure/time/system_clock.h"
-#include "presentation/controllers/calendar_controller.h"
-#include "presentation/views/cli/calendar_view.h"
-
+#include "presentation/cli/commands/command_registry.h"
+#include "presentation/cli/controllers/calendar_controller.h"
+#include "presentation/cli/views/calendar_view.h"
 namespace cli {
 
 // 组合根：组装依赖并注册命令

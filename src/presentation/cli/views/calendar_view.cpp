@@ -1,6 +1,6 @@
 #include <sstream>
 
-#include "presentation/views/cli/calendar_view.h"
+#include "presentation/cli/views/calendar_view.h"
 
 namespace presentation {
 namespace views {

@@ -1,6 +1,6 @@
 #include <sstream>
 
-#include "cli/command_registry.h"
+#include "presentation/cli/commands/command_registry.h"
 
 namespace cli {
 
