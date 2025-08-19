@@ -22,11 +22,10 @@ using CmdHandler =
 
 struct Command {
   CmdHandler handler;
-  std::string description;           // 简要说明
-  std::string usage;                 // 用法，如 "view YYYYMMDD YYYYMMDD"
-  int min_args{0};                   // 最少参数
-  int max_args{-1};                  // -1 表示不限
-  std::vector<std::string> aliases;  // 可选别名（如 "-h","--help"）
+  std::string description;  // 简要说明
+  std::string usage;        // 用法，如 "view YYYYMMDD YYYYMMDD"
+  int min_args{0};          // 最少参数
+  int max_args{-1};         // -1 表示不限
 };
 
 class CommandRegistry {

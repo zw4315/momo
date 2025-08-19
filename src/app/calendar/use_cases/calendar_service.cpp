@@ -25,10 +25,6 @@ dto::ViewDaysBetweenResult CalendarService::ViewDaysBetween(
   const Date from = Date::FromYmd8(q.startDateIso);
   const Date to = Date::FromYmd8(q.endDateIso);
 
-  if (!(from <= to)) {
-    throw std::invalid_argument("from date is after to date");
-  }
-
   const int days = DateRangeService::DaysBetween(from, to);
   return {days};
 }

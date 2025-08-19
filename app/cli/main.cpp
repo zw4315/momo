@@ -1,6 +1,6 @@
-#include "cli/app.h"
+#include "cli/cli_shell.h"
 
 int main(int argc, const char* argv[]) {
-  cli::App app;
-  return app.Run(argc, argv);
+  cli::CliShell cliShell;
+  return cliShell.Run(argc, argv);
 }

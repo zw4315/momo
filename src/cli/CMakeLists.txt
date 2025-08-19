@@ -1,6 +1,6 @@
 # CLI 组合根（库，不含 main）
 add_library(momo_cli_lib
-  app.cpp
+  cli_shell.cpp
   command_registry.cpp
 )
 
@@ -14,6 +14,7 @@ target_link_libraries(momo_cli_lib
     momo_presentation
     momo_application_calendar
     momo_infra_memory
+    momo_infra_time
     momo_domain
 )
 

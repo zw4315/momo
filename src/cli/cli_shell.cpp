@@ -1,37 +1,45 @@
 #include <iostream>
 #include <sstream>
 
-#include "cli/app.h"
+#include "cli/cli_shell.h"
 
 namespace cli {
 
 using presentation::controllers::CalendarController;
 namespace dto = app::calendar::dto;
 
-App::App() : repo_(), service_(repo_), controller_(service_) {
+CliShell::CliShell()
+    : clock_(std::make_shared<infra::time::SystemClock>()),
+      repo_(),
+      service_(repo_),
+      controller_(service_) {
   RegisterCommands();
 }
 
-void App::RegisterCommands() {
+void CliShell::RegisterCommands() {
   // view YYYYMMDD YYYYMMDD
   registry_.Register(
       "view",
       cli::Command{
-          /*handler=*/[this](const std::vector<std::string_view>& args)
-                          -> cli::CmdResult {
+          /*handler=*/
+          [this](const std::vector<std::string_view>& args) -> cli::CmdResult {
             try {
-              auto res =
-                  controller_.View(std::string(args[0]), std::string(args[1]));
+              const std::string d1 = std::string(args[0]);
+              const std::string d2 =
+                  (args.size() >= 2)
+                      ? std::string(args[1])
+                      : clock_->TodayYmd();  // 只有一个参数时，用今天
+
+              auto res = controller_.View(d1, d2);
               return cli::CmdResult{0, view_.Render(res), ""};
             } catch (const std::exception& e) {
               return cli::CmdResult{1, "", e.what()};
             }
           },
           /*description=*/"Show natural day difference between two dates.",
-          /*usage=*/"view YYYYMMDD YYYYMMDD",
-          /*min_args=*/2,
-          /*max_args=*/2,
-          /*aliases=*/{}});
+          /*usage=*/"/view YYYYMMDD [YYYYMMDD]",  // 更新 usage，第二个参数可选
+          /*min_args=*/1,
+          /*max_args=*/2});
 
   // addtag YYYYMMDD TAG
   registry_.Register(
@@ -49,8 +57,7 @@ void App::RegisterCommands() {
                    /*description=*/"Add a tag to a specific day (idempotent).",
                    /*usage=*/"addtag YYYYMMDD TAG",
                    /*min_args=*/2,
-                   /*max_args=*/2,
-                   /*aliases=*/{}});
+                   /*max_args=*/2});
 
   // help
   registry_.Register(
@@ -64,11 +71,10 @@ void App::RegisterCommands() {
                    /*description=*/"Show available commands.",
                    /*usage=*/"help",
                    /*min_args=*/0,
-                   /*max_args=*/0,
-                   /*aliases=*/{"-h", "--help", "?"}});
+                   /*max_args=*/0});
 }
 
-int App::Run(int argc, const char* argv[]) {
+int CliShell::Run(int argc, const char* argv[]) {
   if (argc <= 1) {
     // 简易 REPL
     std::cout << "momo CLI (type 'help' for commands, 'exit' to quit)\n";
@@ -91,7 +97,7 @@ int App::Run(int argc, const char* argv[]) {
   return r.code;
 }
 
-std::vector<std::string> App::Tokenize(const std::string& line) {
+std::vector<std::string> CliShell::Tokenize(const std::string& line) {
   std::istringstream is(line);
   std::vector<std::string> out;
   std::string tok;
@@ -99,7 +105,7 @@ std::vector<std::string> App::Tokenize(const std::string& line) {
   return out;
 }
 
-cli::CmdResult App::RunLine(const std::string& line) {
+cli::CmdResult CliShell::RunLine(const std::string& line) {
   auto toks = Tokenize(line);
   if (toks.empty()) return cli::CmdResult{0, "", ""};
 

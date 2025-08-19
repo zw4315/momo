@@ -6,9 +6,6 @@ namespace cli {
 
 void CommandRegistry::Register(const std::string& name, const Command& cmd) {
   map_[name] = cmd;
-  for (const auto& alias : cmd.aliases) {
-    map_[alias] = cmd;
-  }
 }
 
 bool CommandRegistry::Has(std::string_view name) const {
@@ -62,11 +59,6 @@ void CommandRegistry::ShowHelp(std::ostream& os) const {
   os << "available commands:\n";
   for (const auto& [name, cmd] : map_) {
     os << "  " << name;
-    if (!cmd.aliases.empty()) {
-      os << " (aliases:";
-      for (const auto& a : cmd.aliases) os << " " << a;
-      os << ")";
-    }
     if (!cmd.description.empty()) os << "\n    " << cmd.description;
     if (!cmd.usage.empty()) os << "\n    usage: " << cmd.usage;
     os << "\n";

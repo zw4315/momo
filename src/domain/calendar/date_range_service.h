@@ -55,7 +55,7 @@ struct DateRangeService {
     // 正常业务范围内不会溢出 int，这里做一次防御性裁剪
     if (diff > static_cast<std::int64_t>(INT_MAX)) return INT_MAX;
     if (diff < static_cast<std::int64_t>(INT_MIN)) return INT_MIN;
-    return static_cast<int>(diff);
+    return static_cast<int>(std::abs(diff));
   }
 };
 
