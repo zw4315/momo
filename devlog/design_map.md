@@ -9,3 +9,4 @@ ref: fabiofumarola.github.io
 
 idea:
 - app 层就像一个不懂业务的总裁，懂的不是具体的业务实现，而是资源和流程的组合
+- 需要 buffer 的场景，基本是有个快慢系统，所以 queue 的有限深度限制了快系统的暴走
