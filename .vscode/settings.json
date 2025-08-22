@@ -1,4 +1,14 @@
 {
+    "clangd.path": "/usr/bin/clangd",
+    "clangd.arguments": [
+        "--background-index",
+        "--clang-tidy",
+        "--header-insertion=iwyu",
+        "--completion-style=detailed",
+        "--fallback-style=Google"
+    ],
+    "cmake.configureOnOpen": true,
+    "cmake.buildDirectory": "${workspaceFolder}/build",
     "sqltools.connections": [
         {
             "mysqlOptions": {

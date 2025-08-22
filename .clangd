@@ -1,0 +1,9 @@
+CompileFlags:
+  CompilationDatabase: build
+  Add: [-std=c++17, 
+    -I./src, 
+    -I/Library/Developer/CommandLineTools/usr/include/c++/v1,
+    -I/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/usr/include/]
+  Remove: [-W*]
+Index:
+  Background: Build

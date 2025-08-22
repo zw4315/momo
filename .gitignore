@@ -1,10 +1,13 @@
 build/
 test_logs/
+momo
 GTAGS
 GRTAGS
 GPATH
 tags
 .tags
 .cache/tags
+compile_commands.json
+
 # 保留 src/tags
 !src/domain/tags/
