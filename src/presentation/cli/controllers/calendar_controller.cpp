@@ -5,9 +5,9 @@ namespace controllers {
 
 namespace dto = app::calendar::dto;
 
-dto::ViewDaysBetweenResult CalendarController::View(
-    const std::string& from_ymd8, const std::string& to_ymd8) {
-  dto::ViewDaysBetweenQuery q{from_ymd8, to_ymd8};
+dto::ViewDaysBetweenResult CalendarController::View(const std::string& fromYmd8,
+                                                    const std::string& toYmd8) {
+  dto::ViewDaysBetweenQuery q{fromYmd8, toYmd8};
   return usecase_.ViewDaysBetween(q);
 }
 
