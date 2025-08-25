@@ -2,28 +2,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug momo_cli",
-      "type": "cppdbg",
+      "name": "Debug momo_cli (CodeLLDB)",
+      "type": "lldb",
       "request": "launch",
       "program": "${workspaceFolder}/build/app/cli/momo_cli",
-      "args": [],
-      "stopAtEntry": false,
+      "args": ["view", "20250825"],
       "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": false,
-      "MIMode": "lldb",
-      "setupCommands": [
-        {
-          "description": "Enable pretty-printing for gdb/lldb",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        }
-      ],
-      "preLaunchTask": "CMake: build"
     }
   ]
 }
-
-
-
-

@@ -26,7 +26,7 @@ dto::ViewDaysBetweenResult CalendarService::ViewDaysBetween(
   const Date to = Date::FromYmd8(q.endDateIso);
 
   const int days = DateRangeService::DaysBetween(from, to);
-  return {days};
+  return {q.startDateIso, q.endDateIso, days};
 }
 
 dto::AddTagResult CalendarService::AddTagToDay(const dto::AddTagCommand& cmd) {

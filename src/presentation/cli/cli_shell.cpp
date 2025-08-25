@@ -30,7 +30,7 @@ void CliShell::RegisterCommands() {
                       ? std::string(args[1])
                       : clock_->TodayYmd();  // 只有一个参数时，用今天
 
-              auto res = controller_.View(d1, d2);
+              auto res = controller_.GetDaysBetween(d1, d2);
               return cli::CmdResult{0, view_.Render(res), ""};
             } catch (const std::exception& e) {
               return cli::CmdResult{1, "", e.what()};

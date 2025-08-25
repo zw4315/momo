@@ -8,7 +8,9 @@ namespace calendar {
 namespace dto {
 
 struct ViewDaysBetweenResult {
-  int days;
+  std::string startDateIso;  // 8-digit dates, inclusive range boundaries: "YYYYMMDD"
+  std::string endDateIso;    // 8-digit dates, inclusive range boundaries: "YYYYMMDD"
+  int days;                  // 0-based days between start and end date, inclusive
 };
 
 }  // namespace dto

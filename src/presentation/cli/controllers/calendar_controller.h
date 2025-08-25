@@ -14,7 +14,7 @@ class CalendarController {
       : usecase_(usecase) {}
 
   // 由上层解析后传入 YYYYMMDD
-  app::calendar::dto::ViewDaysBetweenResult View(const std::string& fromYmd8,
+  app::calendar::dto::ViewDaysBetweenResult GetDaysBetween(const std::string& fromYmd8,
                                                  const std::string& toYmd8);
 
   app::calendar::dto::AddTagResult AddTag(const std::string& date_ymd8,
