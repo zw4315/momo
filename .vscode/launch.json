@@ -3,7 +3,8 @@
   "configurations": [
     {
       "name": "Debug momo_cli (CodeLLDB)",
-      "type": "lldb",
+      "type": "cppdbg",
+      "MIMode": "lldb",
       "request": "launch",
       "program": "${workspaceFolder}/build/app/cli/momo_cli",
       "args": ["view", "20250825"],

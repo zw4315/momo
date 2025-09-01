@@ -1,8 +1,9 @@
 {
-    "clangd.path": "/usr/bin/clangd",
+    "C_Cpp.intelliSenseEngine": "disabled",
     "clangd.arguments": [
         "--background-index",
         "--clang-tidy",
+        "--compile-commands-dir=build",
         "--header-insertion=iwyu",
         "--completion-style=detailed",
         "--fallback-style=Google"
