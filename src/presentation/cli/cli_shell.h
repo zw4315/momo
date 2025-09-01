@@ -16,20 +16,19 @@ namespace cli {
 
 // 组合根：组装依赖并注册命令
 class CliShell {
- public:
+public:
   CliShell();
 
   // 从 main 入口运行（若无参数则进入 REPL）
-  int Run(int argc, const char* argv[]);
+  int Run(int argc, const char *argv[]);
 
-  // 运行一行，如 "view 20250501 20250512"
-  cli::CmdResult RunLine(const std::string& line);
-
- private:
+private:
   void RegisterCommands();
-  static std::vector<std::string> Tokenize(const std::string& line);
+  static std::vector<std::string> Tokenize(const std::string &line);
+  // 运行一行，如 "view 20250501 20250512"
+  cli::CmdResult RunLine(const std::string &line);
 
- private:
+private:
   // 依赖（从下到上）
   std::shared_ptr<infra::time::SystemClock> clock_;
   infra::persistence::memory::DayTagsRepositoryMemory repo_;
@@ -39,6 +38,6 @@ class CliShell {
   cli::CommandRegistry registry_;
 };
 
-}  // namespace cli
+} // namespace cli
 
-#endif  // MOMO_CLI_APP_H_
+#endif // MOMO_CLI_APP_H_
